@@ -10,6 +10,7 @@ import {
   setupMockHandlerCreation,
   setupMockHandlerDeletion,
   setupMockHandlerUpdating,
+  setupMockHandlerUpdatingRepeat,
 } from '../__mocks__/handlersUtils';
 import App from '../App';
 import { server } from '../setupTests';
@@ -96,6 +97,43 @@ describe('일정 CRUD 및 기본 기능', () => {
     const eventList = within(screen.getByTestId('event-list'));
     expect(eventList.getByText('수정된 회의')).toBeInTheDocument();
     expect(eventList.getByText('회의 내용 변경')).toBeInTheDocument();
+  });
+
+  it('반복 일정을 수정하면 해당일은 반복 일정이 해제된다', async () => {
+    setupMockHandlerUpdatingRepeat();
+
+    const { user } = setup(<App />);
+
+    await screen.findByText('일정 로딩 완료!');
+
+    const eventList = within(screen.getByTestId('event-list'));
+    expect(eventList.getAllByText('반복: 1일마다')).toHaveLength(3);
+
+    await user.click((await screen.findAllByLabelText('Edit event'))[0]);
+
+    await user.clear(screen.getByLabelText('제목'));
+    await user.type(screen.getByLabelText('제목'), '수정된 회의');
+    await user.clear(screen.getByLabelText('설명'));
+    await user.type(screen.getByLabelText('설명'), '회의 내용 변경');
+
+    await user.click(screen.getByTestId('event-submit-button'));
+
+    expect(eventList.getAllByText('반복: 1일마다')).toHaveLength(2);
+  });
+
+  it('수정모드에서는 반복 설정을 노출하지 않는다', async () => {
+    setupMockHandlerUpdatingRepeat();
+
+    const { user } = setup(<App />);
+
+    await screen.findByText('일정 로딩 완료!');
+
+    await user.click((await screen.findAllByLabelText('Edit event'))[0]);
+
+    expect(screen.queryByText('반복 일정')).not.toBeInTheDocument();
+    expect(screen.queryByText('반복 유형')).not.toBeInTheDocument();
+    expect(screen.queryByText('반복 간격')).not.toBeInTheDocument();
+    expect(screen.queryByText('반복 종료일')).not.toBeInTheDocument();
   });
 
   it('일정을 삭제하고 더 이상 조회되지 않는지 확인한다', async () => {

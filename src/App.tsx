@@ -93,7 +93,9 @@ function App() {
     editEvent,
   } = useEventForm();
 
-  const { events, saveEvent, deleteEvent } = useEventOperations(Boolean(editingEvent), () =>
+  const isEditing = Boolean(editingEvent);
+
+  const { events, saveEvent, deleteEvent } = useEventOperations(isEditing, () =>
     setEditingEvent(null)
   );
 
@@ -126,11 +128,16 @@ function App() {
       description,
       location,
       category,
-      repeat: {
-        type: isRepeating ? repeatType : 'none',
-        interval: repeatInterval,
-        endDate: repeatEndDate || undefined,
-      },
+      repeat: isEditing
+        ? {
+            type: 'none',
+            interval: 0,
+          }
+        : {
+            type: isRepeating ? repeatType : 'none',
+            interval: repeatInterval,
+            endDate: repeatEndDate || undefined,
+          },
       notificationTime,
     };
 
@@ -323,17 +330,19 @@ function App() {
             </Select>
           </FormControl>
 
-          <FormControl>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={isRepeating}
-                  onChange={(e) => setIsRepeating(e.target.checked)}
-                />
-              }
-              label="반복 일정"
-            />
-          </FormControl>
+          {!isEditing && (
+            <FormControl>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isRepeating}
+                    onChange={(e) => setIsRepeating(e.target.checked)}
+                  />
+                }
+                label="반복 일정"
+              />
+            </FormControl>
+          )}
 
           <FormControl fullWidth>
             <FormLabel htmlFor="notification">알림 설정</FormLabel>
@@ -352,7 +361,7 @@ function App() {
           </FormControl>
 
           {/* ! 반복은 8주차 과제에 포함됩니다. 구현하고 싶어도 참아주세요~ */}
-          {isRepeating && (
+          {isRepeating && !isEditing && (
             <Stack spacing={2}>
               <FormControl fullWidth>
                 <FormLabel>반복 유형</FormLabel>
