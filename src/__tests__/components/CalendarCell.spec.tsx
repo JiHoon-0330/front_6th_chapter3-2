@@ -81,4 +81,36 @@ describe('CalendarCell', () => {
     expect(screen.getByText('이벤트')).toBeInTheDocument();
     expect(screen.getByTestId('NotificationsIcon')).toBeInTheDocument();
   });
+
+  it('반복 이벤트는 배경색이 주황색이다', () => {
+    render(
+      <CalendarCell
+        events={[
+          {
+            id: '1',
+            title: '이벤트',
+            date: '2021-01-01',
+            startTime: '10:00',
+            endTime: '11:00',
+            description: '설명',
+            location: '위치',
+            category: '카테고리',
+            repeat: {
+              type: 'daily',
+              interval: 1,
+            },
+            notificationTime: 0,
+          },
+        ]}
+        notifiedEvents={[]}
+        day={1}
+      />
+    );
+    expect(screen.getByRole('cell')).toBeInTheDocument();
+    expect(screen.getByText('1')).toBeInTheDocument();
+    expect(screen.getByText('이벤트')).toBeInTheDocument();
+    const boxStyle = getComputedStyle(screen.getByTestId('box'));
+    expect(boxStyle.backgroundColor).toBe('rgb(255, 243, 224)');
+    expect(boxStyle.color).toBe('rgb(255, 111, 0)');
+  });
 });

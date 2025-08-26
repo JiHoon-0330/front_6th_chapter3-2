@@ -37,20 +37,38 @@ export function CalendarCell({ events, notifiedEvents, day, holiday }: Props) {
           )}
           {getEventsForDay(events, day).map((event) => {
             const isNotified = notifiedEvents.includes(event.id);
+            const isRepeat = event.repeat.type !== 'none';
+            const baseStyle = {
+              p: 0.5,
+              my: 0.5,
+              backgroundColor: '#f5f5f5',
+              borderRadius: 1,
+              fontWeight: 'normal',
+              color: 'inherit',
+              minHeight: '18px',
+              width: '100%',
+              overflow: 'hidden',
+            };
+            const notifiedStyle = {
+              backgroundColor: '#ffebee',
+              fontWeight: 'bold',
+              color: '#d32f2f',
+            };
+            const repeatStyle = {
+              backgroundColor: '#fff3e0',
+              fontWeight: 'bold',
+              color: '#ff6f00',
+            };
+            const specialStyle = isNotified ? notifiedStyle : isRepeat ? repeatStyle : {};
+
             return (
               <Box
                 key={event.id}
                 sx={{
-                  p: 0.5,
-                  my: 0.5,
-                  backgroundColor: isNotified ? '#ffebee' : '#f5f5f5',
-                  borderRadius: 1,
-                  fontWeight: isNotified ? 'bold' : 'normal',
-                  color: isNotified ? '#d32f2f' : 'inherit',
-                  minHeight: '18px',
-                  width: '100%',
-                  overflow: 'hidden',
+                  ...baseStyle,
+                  ...specialStyle,
                 }}
+                data-testid={'box'}
               >
                 <Stack direction="row" spacing={1} alignItems="center">
                   {isNotified && <Notifications fontSize="small" />}
