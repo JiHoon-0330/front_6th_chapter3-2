@@ -80,6 +80,31 @@ describe('일정 CRUD 및 기본 기능', () => {
     expect(eventList.getByText('카테고리: 업무')).toBeInTheDocument();
   });
 
+  it('반복 일정이 등록된다.', async () => {
+    setupMockHandlerCreation();
+
+    const { user } = setup(<App />);
+
+    await user.type(screen.getByLabelText('제목'), '반복 회의');
+    await user.type(screen.getByLabelText('날짜'), '2025-10-15');
+    await user.type(screen.getByLabelText('시작 시간'), '22:00');
+    await user.type(screen.getByLabelText('종료 시간'), '23:00');
+    await user.type(screen.getByLabelText('설명'), '프로젝트 진행 상황 논의');
+    await user.type(screen.getByLabelText('위치'), '회의실 A');
+    await user.click(screen.getByLabelText('카테고리'));
+    await user.click(within(screen.getByLabelText('카테고리')).getByRole('combobox'));
+    await user.click(screen.getByRole('option', { name: '업무-option' }));
+    await user.click(screen.getByTestId('repeat-type-select'));
+    await user.click(within(screen.getByTestId('repeat-type-select')).getByRole('combobox'));
+    await user.click(screen.getByRole('option', { name: '매일' }));
+    await user.click(screen.getByLabelText('반복 종료일'));
+    await user.type(screen.getByLabelText('반복 종료일'), '2025-10-20');
+    await user.click(screen.getByTestId('event-submit-button'));
+    await user.click(screen.getByTestId('event-submit-button'));
+    const eventList = within(screen.getByTestId('event-list'));
+    expect(await eventList.findAllByText('반복 회의')).toHaveLength(6);
+  });
+
   it('기존 일정의 세부 정보를 수정하고 변경사항이 정확히 반영된다', async () => {
     const { user } = setup(<App />);
 
