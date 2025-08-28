@@ -9,6 +9,7 @@ import { ReactElement } from 'react';
 import {
   setupMockHandlerCreation,
   setupMockHandlerDeletion,
+  setupMockHandlerDeletionRepeat,
   setupMockHandlerUpdating,
   setupMockHandlerUpdatingRepeat,
 } from '../__mocks__/handlersUtils';
@@ -173,6 +174,22 @@ describe('일정 CRUD 및 기본 기능', () => {
     await user.click(allDeleteButton[0]);
 
     expect(eventList.queryByText('삭제할 이벤트')).not.toBeInTheDocument();
+  });
+
+  it('반복 일정을 삭제한다.', async () => {
+    setupMockHandlerDeletionRepeat();
+
+    const { user } = setup(<App />);
+
+    await screen.findByText('일정 로딩 완료!');
+
+    const eventList = within(screen.getByTestId('event-list'));
+    expect(eventList.getAllByText('반복: 1일마다')).toHaveLength(2);
+
+    const allDeleteButton = await screen.findAllByLabelText('Delete event');
+    await user.click(allDeleteButton[0]);
+
+    expect(eventList.getAllByText('반복: 1일마다')).toHaveLength(1);
   });
 });
 
