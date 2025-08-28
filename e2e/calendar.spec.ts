@@ -17,22 +17,22 @@ test.describe('월간 캘린더 테스트', () => {
   });
 
   test('휴일 렌더링', async ({ page }) => {
-    await page.getByText('15');
-    await page.getByText('광복절');
+    await page.waitForSelector('text=15');
+    await page.waitForSelector('text=광복절');
   });
 
   test('다음달로 이동', async ({ page }) => {
     await page.getByTestId('ChevronRightIcon').click();
-    await page.getByText('2025년 9월');
+    await page.waitForSelector('text=2025년 9월');
     await page.getByTestId('ChevronRightIcon').click();
-    await page.getByText('2025년 10월');
+    await page.waitForSelector('text=2025년 10월');
   });
 
   test('이전달로 이동', async ({ page }) => {
     await page.getByTestId('ChevronLeftIcon').click();
-    await page.getByText('2025년 7월');
+    await page.waitForSelector('text=2025년 7월');
     await page.getByTestId('ChevronLeftIcon').click();
-    await page.getByText('2025년 6월');
+    await page.waitForSelector('text=2025년 6월');
   });
 });
 
@@ -53,21 +53,21 @@ test.describe('주간 캘린더 테스트', () => {
   });
 
   test('휴일 렌더링', async ({ page }) => {
-    await page.getByText('15');
-    await page.getByText('광복절');
+    await page.waitForSelector('text=15');
+    await page.waitForSelector('text=광복절');
   });
 
   test('다음주로 이동', async ({ page }) => {
     await page.getByTestId('ChevronRightIcon').click();
-    await page.getByText('2025년 8월 3주');
+    await page.waitForSelector('text=2025년 8월 3주');
     await page.getByTestId('ChevronRightIcon').click();
-    await page.getByText('2025년 8월 4주');
+    await page.waitForSelector('text=2025년 8월 4주');
   });
 
   test('이전주로 이동', async ({ page }) => {
     await page.getByTestId('ChevronLeftIcon').click();
-    await page.getByText('2025년 8월 1주');
+    await page.waitForSelector('text=2025년 8월 1주');
     await page.getByTestId('ChevronLeftIcon').click();
-    await page.getByText('2025년 7월 5주');
+    await page.waitForSelector('text=2025년 7월 5주');
   });
 });

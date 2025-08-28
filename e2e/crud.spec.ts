@@ -56,8 +56,8 @@ test.describe('CRUD 테스트', () => {
     await page.getByRole('textbox', { name: '시작 시간' }).fill('11:00');
     await page.getByRole('textbox', { name: '종료 시간' }).fill('10:00');
     await page.getByTestId('event-submit-button').click();
-    await page.getByText('시작 시간은 종료 시간보다 빨라야 합니다');
-    await page.getByText('종료 시간은 시작 시간보다 늦어야 합니다');
+    await page.waitForSelector('text=시작 시간은 종료 시간보다 빨라야 합니다');
+    await page.waitForSelector('text=종료 시간은 시작 시간보다 늦어야 합니다');
   });
 
   test('중복 일정 -> 취소', async ({ page }) => {
