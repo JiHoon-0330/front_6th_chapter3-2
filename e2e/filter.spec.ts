@@ -1,6 +1,6 @@
 import { test } from '@playwright/test';
 
-test.describe('월간 캘린더 테스트', () => {
+test.describe('이벤트 필터링 테스트', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('http://localhost:5173/');
     await page.waitForSelector('text=일정 로딩 완료!');
